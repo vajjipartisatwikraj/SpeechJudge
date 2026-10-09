@@ -1,0 +1,17 @@
+[project]
+name = "speech-judge"
+version = "1.0.0"
+description = "Stateless speech evaluation service (STT, pronunciation, fluency, prosody, language scoring)"
+requires-python = ">=3.11"
+# Runtime dependencies are pinned in requirements*.txt (used by Docker and CI).
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+markers = [
+    "real: needs real models or a running stack; run with --real",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]

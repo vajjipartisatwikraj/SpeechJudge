@@ -1,0 +1,13 @@
+# Real model backends. Not needed in mock mode.
+# Versions below are the ones validated on the Windows CPU dev machine (Python 3.13).
+# On a GPU server, install the CUDA build of torch per the PyTorch instructions, then the rest.
+faster-whisper==1.2.1
+torch==2.14.1
+transformers==5.18.0
+phonemizer==3.4.0
+espeakng-loader==0.2.4       # bundles espeak-ng (no system install needed)
+praat-parselmouth==0.4.7
+pyloudnorm==0.2.0
+imageio-ffmpeg==0.6.0        # FFmpeg binary for non-WAV uploads (or install FFmpeg system-wide)
+
+accelerate==1.15.0           # required by the transformers (GPU) Qwen backend (device_map loading)

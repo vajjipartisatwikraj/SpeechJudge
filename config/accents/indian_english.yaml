@@ -1,0 +1,91 @@
+# Accent profile for the phoneme-based pronunciation check: Indian English.
+#
+# The reference pronunciation comes from espeak-ng (en-us), which has no Indian voice. To avoid
+# marking well-known, stable features of Indian English as errors, this file lists sound
+# differences that are TOLERATED (cost 0) or treated as NEAR misses (reduced cost).
+#
+# IMPORTANT: this list is compiled from general phonetics knowledge of Indian English and is a
+# STARTING POINT. It should be reviewed by someone who knows the target speakers, and tuned
+# against human ratings. Every tolerance also hides a real error of that kind (e.g. "think"
+# said as "tink" is accepted here). Edit freely; nothing is hard-coded elsewhere.
+#
+# Symbols are IPA as produced by the espeak-based model, after normalisation:
+# length marks (ː), aspiration (ʰ/h), dental/nasal diacritics are stripped before comparing;
+# diphthongs are split into vowel + glide (eɪ = e + ɪ); affricates into stop + fricative
+# (tʃ = t + ʃ); post-vocalic r-colouring (ɚ, ɑːɹ, ...) into vowel + ɹ.
+
+name: indian_english
+espeak_language: en-us
+model: facebook/wav2vec2-xlsr-53-espeak-cv-ft
+
+# Weighted phoneme error rate (0 = perfect) mapped to the 0..1 pronunciation score.
+# Even correct speech gives a non-zero error rate because the recogniser itself makes mistakes,
+# so full marks are allowed from `full_at` upward. Tune on real recordings.
+thresholds:
+  # error = (1 - word_error_weight) * weighted sound error rate
+  #       + word_error_weight * average word "badness" (0 at word_ok_above, 1 at word_bad_below)
+  # measured over the words that were actually produced (missing words count in `completeness`).
+  word_error_weight: 0.5
+  word_ok_above: 0.9        # word accuracy at or above this: word counts as fine
+  word_bad_below: 0.6       # at or below this: word counts as fully mispronounced (linear between)
+  per_full_at: 0.03      # error at or below this -> pronunciation 1.0
+  per_zero_at: 0.35      # error at or above this -> pronunciation 0.0
+
+# A word counts as "present" (for completeness) if at least this share of its sounds were
+# not deleted.
+word_present_min_coverage: 0.5
+
+costs:
+  substitution: 1.0            # unrelated sound
+  class_substitution: 0.6      # same broad class (vowel/vowel, stop/stop, fricative/fricative...)
+  near_substitution: 0.3       # listed near pairs below
+  deletion: 1.0
+  insertion: 1.0
+  cheap_deletion: 0.4          # schwa, diphthong glide, post-vocalic r (often dropped/varied)
+  cheap_insertion: 0.4         # inserted schwa (epenthesis, e.g. "school" -> "ischool")
+  rcolor_deletion: 0.15        # dropped post-vocalic r (Indian English is variably rhotic)
+  reduction: 0.3               # full vowel said as schwa (normal reduction of function words)
+
+# Two-way equivalences: any member may be said for any other at zero cost.
+equivalent:
+  - [t, ʈ]            # retroflex t is the normal Indian English realisation
+  - [d, ɖ]
+  - [v, w, ʋ]         # v/w merger, labiodental approximant
+  - [ɹ, r, ɾ, ɽ, ɻ]   # tap / trill / approximant r
+  - [l, ɫ, ɭ]
+  - [ɑ, ɒ, ɔ]         # father / cot / thought
+  - [ə, ɐ]
+
+# One-way tolerances: expected sound -> sounds accepted in its place at zero cost.
+accepted:
+  θ: [t]              # dental stop for "th" (think -> tink)
+  ð: [d]              # dental stop for "th" (this -> dis)
+  ɾ: [t, ʈ, d, ɖ]     # espeak flaps intervocalic t (water); Indian English uses a stop
+  ɪ: [ə]
+  ə: [a, ɛ, ʌ, ɪ, ʊ, ɑ, ɔ, i]   # less vowel reduction ("the" before a vowel is "thee" too)
+  ʌ: [ə, a]
+  ɜ: [ə, ɛ, ɐ, a]
+  e: [ɛ]
+  ɛ: [e]
+  o: [ɔ]
+  ɔ: [o]
+
+# Near pairs (cost = near_substitution). Two-way.
+near:
+  - [ɪ, i]
+  - [ʊ, u]
+  - [ʊ, o]
+  - [æ, ɛ]
+  - [æ, a]
+  - [z, s]
+  - [ʒ, z]
+  - [ʒ, ʃ]
+  - [f, p]
+  - [ʌ, ɑ]
+  - [e, i]
+  - [o, u]
+  - [ŋ, n]
+
+# Characters/sequences that split a model token into comparable units.
+diphthongs: [aɪ, eɪ, oʊ, aʊ, ɔɪ, əʊ, iə, eə]
+affricates: [tʃ, dʒ]

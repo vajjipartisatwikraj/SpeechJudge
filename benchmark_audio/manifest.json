@@ -1,0 +1,88 @@
+{
+  "description": "10 benchmark clips of about 10 seconds each (Windows text-to-speech, 16 kHz mono WAV). The same 10 clips are used for the Reading, Repeat, Q&A and Story Telling sections; 'text' is what is spoken and doubles as the expected text for Reading / Repeat. Re-create the audio with benchmark_audio/make_benchmark_audio.ps1.",
+  "target_duration_s": 10,
+  "items": [
+    {
+      "id": "audio_01",
+      "file": "audio_01.wav",
+      "text": "Every morning I wake up early, drink a glass of water, and walk to the park near my house, where I meet my friends and talk.",
+      "question": "Describe your daily morning routine.",
+      "story_prompt": "Tell a story about a memorable morning in your life."
+    },
+    {
+      "id": "audio_02",
+      "file": "audio_02.wav",
+      "text": "My favorite subject at school is science, because we do exciting experiments in the laboratory and I learn how things work in the world.",
+      "question": "What is your favorite subject at school and why?",
+      "story_prompt": "Tell a story about a science experiment that went wrong."
+    },
+    {
+      "id": "audio_03",
+      "file": "audio_03.wav",
+      "text": "Last summer my family travelled to a small village near the mountains, where we swam in a clear river and ate fresh fruit every day.",
+      "question": "Tell me about a trip you enjoyed with your family.",
+      "story_prompt": "Tell a story about a holiday that you will never forget."
+    },
+    {
+      "id": "audio_04",
+      "file": "audio_04.wav",
+      "text": "Reading books helps me relax after a long day, and it also improves my vocabulary, my imagination, and my understanding of other people.",
+      "question": "Why do you think reading books is important?",
+      "story_prompt": "Tell a story about a book that changed the way you think."
+    },
+    {
+      "id": "audio_05",
+      "file": "audio_05.wav",
+      "text": "In my town there is a busy market where farmers sell vegetables, spices, and flowers, and the whole street smells wonderful on Sunday mornings.",
+      "question": "Describe a place in your town that you like to visit.",
+      "story_prompt": "Tell a story about a day at a busy market."
+    },
+    {
+      "id": "audio_06",
+      "file": "audio_06.wav",
+      "text": "When I was ten years old I learned to ride a bicycle, and although I fell down many times, my father never let me give up.",
+      "question": "Tell me about something difficult that you learned to do.",
+      "story_prompt": "Tell a story about a time you learned something new."
+    },
+    {
+      "id": "audio_07",
+      "file": "audio_07.wav",
+      "text": "Technology has changed the way students study, because they can watch lessons online, search for answers quickly, and talk to teachers from anywhere.",
+      "question": "How has technology changed the way students learn?",
+      "story_prompt": "Tell a story about a day without any technology."
+    },
+    {
+      "id": "audio_08",
+      "file": "audio_08.wav",
+      "text": "Our cricket team practises every evening after school, and last month we won the district final by playing carefully and helping each other.",
+      "question": "Do you enjoy playing a sport? Tell me about it.",
+      "story_prompt": "Tell a story about a match or a game that you remember."
+    },
+    {
+      "id": "audio_09",
+      "file": "audio_09.wav",
+      "text": "I want to become a doctor one day, so I study hard, listen carefully to my teachers, and spend my weekends volunteering at a small clinic.",
+      "question": "What do you want to be in the future and how will you achieve it?",
+      "story_prompt": "Tell a story about a person who helped you."
+    },
+    {
+      "id": "audio_10",
+      "file": "audio_10.wav",
+      "text": "The festival of lights is my favorite celebration, because the houses shine with lamps, families cook delicious sweets together, and everyone shares gifts and smiles.",
+      "question": "Describe a festival that is special to you.",
+      "story_prompt": "Tell a story about a celebration with your neighbours."
+    }
+  ],
+  "jumbled": [
+    { "expected_text": "The teacher asked the students to open their books.", "submitted_text": "The teacher asked the students to open their books." },
+    { "expected_text": "My brother plays football with his friends every evening.", "submitted_text": "My brother plays football with every his friends evening." },
+    { "expected_text": "We should always respect the opinions of other people.", "submitted_text": "We should always respect the opinions of other people." },
+    { "expected_text": "She walked slowly along the river before the sun went down.", "submitted_text": "She walked slowly along the river the before sun went down." },
+    { "expected_text": "The new library opens at nine o'clock tomorrow morning.", "submitted_text": "The new library opens at nine o'clock tomorrow morning." },
+    { "expected_text": "Healthy food and regular exercise keep the body strong.", "submitted_text": "Healthy food and exercise regular keep the body strong." },
+    { "expected_text": "They decided to plant more trees in the school garden.", "submitted_text": "They decided to plant more trees in the school garden." },
+    { "expected_text": "The train from Mumbai arrived late because of heavy rain.", "submitted_text": "The train from Mumbai arrived late because heavy of rain." },
+    { "expected_text": "He listens to music while he does his homework.", "submitted_text": "He listens to music while he does his homework." },
+    { "expected_text": "Learning a new language opens many doors in life.", "submitted_text": "Learning a new language many opens doors in life." }
+  ]
+}

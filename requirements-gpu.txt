@@ -1,0 +1,16 @@
+# GPU server (NVIDIA RTX 5070 = Blackwell, compute capability 12.0). Install order matters:
+#
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128      # CUDA 12.8 build: has sm_120 kernels
+#   pip install -r requirements-ml.txt -r requirements-gpu.txt                # keeps the torch installed above if it is new enough
+#
+# Verify:
+#   python -c "import torch; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_arch_list())"   # expect sm_120 in the list
+#   python -c "import ctranslate2; print(ctranslate2.__version__, ctranslate2.get_cuda_device_count())"           # expect >= 4.6 and 1
+#
+# requirements-ml.txt pins torch to the version validated on the CPU laptop; on the server the CUDA wheel above
+# replaces it. If pip reports a conflict, install requirements-ml.txt first and run the torch line again.
+
+ctranslate2==4.8.2           # same version as the dev machine; 4.6+ is the first line with CUDA 12.8 (RTX 50 series)
+nvidia-ml-py==13.615.71      # GPU utilisation / VRAM sampling in the benchmarks (NVML)

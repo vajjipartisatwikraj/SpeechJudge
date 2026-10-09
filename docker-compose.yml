@@ -1,0 +1,73 @@
+# GPU-server topology (one 24 GB GPU: L4 / A10G class):
+#   api    - FastAPI gateway. Loads no models (SJ_LOAD_MODELS_IN_API=false); readiness comes from
+#            worker heartbeats in Redis.
+#   worker - Celery worker holding Whisper + phoneme model + Qwen once, shared by its threads.
+#   redis  - broker + temporary job state (TTL). Not a business database; no persistence.
+#
+# Configuration: values in ./.env are loaded first; the `environment:` blocks below override them with
+# container/production settings. Create the file with:  cp .env.example .env  and set
+# SJ_SERVICE_CREDENTIALS to a long random value (production mode refuses weak ones).
+#
+# Scale out:  docker compose up --scale worker=3   (one GPU per worker on separate hosts).
+# Port 8000 is bound to localhost; put it behind a private network / reverse proxy, never public.
+
+x-common-env: &common-env
+  SJ_ENVIRONMENT: production
+  SJ_MOCK_MODE: "false"
+  SJ_ENABLE_DOCS: "false"
+  SJ_JOB_BACKEND: celery
+  SJ_REDIS_URL: redis://redis:6379/0
+  SJ_FFMPEG_PATH: ffmpeg
+  SJ_WHISPER_MODEL: large-v3
+  SJ_WHISPER_COMPUTE_TYPE: float16
+  SJ_QWEN_BACKEND: transformers
+  SJ_GPU_PRESENT: "true"              # GPU profile: device cuda, batching on, 900 s section timeout
+
+services:
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]   # state is temporary
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      <<: *common-env
+      SJ_LOAD_MODELS_IN_API: "false"
+      SJ_HOST: 0.0.0.0
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: ["celery", "-A", "app.workers.celery_app", "worker", "--pool=threads",
+              "--concurrency=2", "--loglevel=INFO"]
+    env_file: .env
+    environment:
+      <<: *common-env
+    volumes:
+      - model-cache:/home/judge/.cache
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  model-cache:

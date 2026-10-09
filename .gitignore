@@ -1,0 +1,26 @@
+# --- environment / secrets (never commit) ---
+.env
+!.env.example
+
+# --- Python ---
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+.ruff_cache/
+*.egg-info/
+
+# --- runtime artefacts ---
+*.log
+/models/
+celerybeat-schedule*
+
+# --- generated test audio (recreate with: pwsh tests/fixtures/make_audio.ps1) ---
+tests/fixtures/audio/*.wav
+
+# load-test run outputs (keep the folder, not the runs)
+tests/load/results/*.json
+
+# benchmark run logs written by the API's benchmark runner (benchmark_results.json itself is tracked)
+benchmarks/runs/

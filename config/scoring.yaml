@@ -1,0 +1,130 @@
+# Scoring configuration for the deterministic Score Engine.
+#
+# NOTE: these weights are ENGINEERING DEFAULTS pending calibration with human-rated
+# recordings. They are not official Cognizant/Pearson scoring weights.
+#
+# Each weight set must be non-negative and sum to 1.0 (+/- 0.001) or the service
+# refuses to start. Weight keys refer to Raw_Metrics produced by the evaluators
+# (all normalized to 0..1).
+
+version: 1
+
+scoring:
+  READING:
+    word_accuracy: 0.30
+    pronunciation: 0.35
+    fluency: 0.15
+    prosody: 0.10
+    audio_quality: 0.10
+
+  REPEAT:
+    word_accuracy: 0.25
+    completeness: 0.15
+    pronunciation: 0.30
+    fluency: 0.15
+    prosody: 0.10
+    audio_quality: 0.05
+
+  # UI-based jumbled: student rearranged displayed words (no audio).
+  JUMBLED_UI:
+    word_accuracy: 0.50
+    order_correctness: 0.50
+
+  # Spoken jumbled: student speaks the reconstructed sentence.
+  JUMBLED_SPOKEN:
+    word_accuracy: 0.45
+    order_correctness: 0.35
+    fluency: 0.10
+    audio_quality: 0.10
+
+  QUESTION_ANSWER:
+    relevance: 0.30
+    grammar: 0.20
+    vocabulary: 0.15
+    coherence: 0.15
+    content: 0.10
+    fluency: 0.05
+    prosody: 0.05
+
+  STORYTELLING:
+    topic_relevance: 0.20
+    content: 0.15
+    coherence: 0.15
+    grammar: 0.15
+    vocabulary: 0.10
+    logical_flow: 0.10
+    completeness: 0.05
+    fluency: 0.05
+    prosody: 0.05
+
+# Target ranges that map unbounded acoustic measurements onto 0..1 (Requirement 15.5).
+# ramp:  value <= zero_at -> 0, value >= full_at -> 1 (works in either direction)
+# band:  0 below/above the outer edges, 1 between the inner edges
+# These are starting points; tune them against human-rated recordings.
+normalizers:
+  # --- fluency ---
+  speech_rate_wpm:            # words per minute over the speaking span
+    type: band
+    zero_lo: 60
+    full_lo: 110
+    full_hi: 170
+    zero_hi: 230
+  pause_ratio:                # share of the speaking span spent in pauses
+    type: ramp
+    full_at: 0.10
+    zero_at: 0.50
+  mid_clause_pause_rate:      # hesitation pauses (inside a phrase) per 10 words
+    type: ramp
+    full_at: 0.5
+    zero_at: 4.0
+  mean_run_length:            # words spoken between pauses
+    type: ramp
+    zero_at: 2.0
+    full_at: 6.0
+  hesitation_rate:            # fillers + immediate repetitions per 10 words
+    type: ramp
+    full_at: 0.0
+    zero_at: 3.0
+  long_pause_count:           # pauses of 1 s or more
+    type: ramp
+    full_at: 0
+    zero_at: 3
+  # --- prosody (pitch measured in semitones around the speaker's own median) ---
+  pitch_std_st:
+    type: ramp
+    zero_at: 1.0
+    full_at: 3.0
+  pitch_range_st:
+    type: ramp
+    zero_at: 3.0
+    full_at: 9.0
+  syllable_energy_std_db:     # loudness variation between syllables (stress / emphasis)
+    type: ramp
+    zero_at: 1.0
+    full_at: 4.0
+  # legacy (kept for older callers)
+  pitch_std_hz: {type: ramp, zero_at: 10, full_at: 35}
+  energy_std_db: {type: ramp, zero_at: 3, full_at: 8}
+
+# How acoustic sub-measures combine into fluency / prosody. A measure that could not be
+# computed (e.g. no word timestamps) is skipped and the remaining weights are renormalised.
+delivery:
+  fluency:
+    speech_rate_wpm: 0.25
+    pause_ratio: 0.15
+    mid_clause_pause_rate: 0.20
+    mean_run_length: 0.15
+    hesitation_rate: 0.10
+    long_pause_count: 0.15
+  prosody:
+    pitch_std_st: 0.30
+    pitch_range_st: 0.25
+    syllable_energy_std_db: 0.30
+    intonation_score: 0.15      # only when the sentence type (. or ?) is known
+
+# Intonation: where pitch ends relative to the speaker's median (semitones).
+# NOTE: expected patterns are generic English ones; Indian English intonation differs in places,
+# which is why this component has a low weight. Verify with native-speaker ratings.
+intonation:
+  statement: {zero_at: 1.0, full_at: -1.5}    # should end lower
+  question: {zero_at: -1.0, full_at: 2.0}     # should end higher

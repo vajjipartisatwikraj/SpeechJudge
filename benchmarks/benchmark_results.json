@@ -1,0 +1,46 @@
+{
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070",
+    "vram_gb": 12
+  },
+  "components": {
+    "whisper": {
+      "sequential_10_audio_seconds": 0,
+      "batch_10_audio_seconds": 0
+    },
+    "phoneme": {
+      "sequential_10_audio_seconds": 0,
+      "batch_10_audio_seconds": 0
+    },
+    "qwen": {
+      "average_latency_seconds": 0
+    }
+  },
+  "sections": {
+    "reading": {
+      "questions": 10,
+      "total_seconds": 0,
+      "average_question_seconds": 0
+    },
+    "repeat": {
+      "questions": 10,
+      "total_seconds": 0,
+      "average_question_seconds": 0
+    },
+    "jumbled": {
+      "questions": 10,
+      "total_seconds": 0,
+      "average_question_seconds": 0
+    },
+    "question_answer": {
+      "questions": 10,
+      "total_seconds": 0,
+      "average_question_seconds": 0
+    },
+    "story_telling": {
+      "questions": 10,
+      "total_seconds": 0,
+      "average_question_seconds": 0
+    }
+  }
+}
